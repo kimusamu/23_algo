@@ -41,7 +41,7 @@ def shell_sort(numbers):
     print('before : ', numbers)
 
     for h in range(10, 1, -1):
-        for i in range(h, len(numbers) - 1):
+        for i in range(h, len(numbers)):
             currentelement = numbers[i]
             j = i
             while(j >= h and numbers[j - h] > currentelement):
