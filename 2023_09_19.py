@@ -40,14 +40,19 @@ def insertion_sort(numbers):
 def shell_sort(numbers):
     print('before : ', numbers)
 
-    for h in range(10, 1, -1):
-        for i in range(h, len(numbers)):
-            currentelement = numbers[i]
+    n = len(numbers)
+    h = 10
+
+    while h > 0:
+        for i in range(h, n):
+            current = numbers[i]
             j = i
-            while(j >= h and numbers[j - h] > currentelement):
+            while j >= h and numbers[j - h] > current:
                 numbers[j] = numbers[j - h]
-                j = j - h
-            numbers[j] = currentelement
+                j -= h
+            numbers[h] = current
+        h = h - 1
+        
 
     print('after : ', numbers)
 
