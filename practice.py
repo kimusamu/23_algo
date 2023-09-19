@@ -30,7 +30,7 @@ def heapify(arr):
         downheap(arr, size, i)
 
 def heap_sort(numbers):
-    print(numbers)
+    print('before : ', numbers)
 
     heapify(numbers)
 
@@ -40,6 +40,44 @@ def heap_sort(numbers):
         numbers[0], numbers[i] = numbers[i], numbers[0]
         downheap(numbers, i, 0)
 
-    print(numbers)
+    print('after : ', numbers)
 
-heap_sort(numbers)
+#heap_sort(numbers)
+
+#------------------------------------------------------------------------------
+#기수정렬
+#입력 : n개의 r진수의 k자리 숫자
+#출력 : 정렬된 숫자
+
+def radix_sort(numbers, n, k, r):
+    print('before : ', numbers)
+
+    def counting_sort(numbers, exp):
+        count = [0] * r
+        output = [0] * n
+
+        for i in range(n):
+            index = (numbers[i] // exp) % r
+            count[index] += 1
+
+        for i in range(1, r):
+            count[i] += count[i - 1]
+
+        i = n - 1
+
+        while i >= 0:
+            index = (numbers[i] // exp) % r
+            output[count[index] - 1] = numbers[i]
+            count[index] -= 1
+            i -= 1
+
+        for i in range(n):
+            numbers[i] = output[i]
+
+    for i in range(k):
+        exp = r ** i
+        counting_sort(numbers, exp)
+
+    print('after : ', numbers)
+
+radix_sort(numbers, 100, 10, 3)
