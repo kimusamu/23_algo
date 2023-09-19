@@ -28,33 +28,32 @@ def insertion_sort(numbers):
     print('before : ', numbers)
 
     for end in range(1, len(numbers)):
-        for i in range(end, 0, -1):
-            if numbers[i - 1] > numbers[i]:
-                numbers[i - 1], numbers[i] = numbers[i], numbers[i - 1]
+        to_insert = numbers[end]
+        i = end
+        while i > 0 and numbers[i - 1] > to_insert:
+            numbers[i] = numbers[i - 1]
+            i -= 1
+        numbers[i] = to_insert
 
     print('after : ', numbers)
 
 def shell_sort(numbers):
-    n = len(numbers)
-    h = n // 3
-
     print('before : ', numbers)
 
-    while(h > 0):
-        for i in range(h, n):
-            temp = numbers[i]
-            j = i - h
-            while(j >= 0 and numbers[j] > temp):
-                numbers[j + h] = numbers[j]
-                j -= h
-            numbers[j + h] = temp
-        h //= 3
+    for h in range(10, 1, -1):
+        for i in range(h, len(numbers) - 1):
+            currentelement = numbers[i]
+            j = i
+            while(j >= h and numbers[j - h] > currentelement):
+                numbers[j] = numbers[j - h]
+                j = j - h
+            numbers[j] = currentelement
 
     print('after : ', numbers)
 
 
 #bubble_sort(numbers)
-selection_sort(numbers)
+#selection_sort(numbers)
 #insertion_sort(numbers)
-#shell_sort(numbers)
+shell_sort(numbers)
 
