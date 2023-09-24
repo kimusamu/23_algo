@@ -52,30 +52,30 @@ def heap_sort(numbers):
 def radix_sort(numbers, n, k, r):
     print('before : ', numbers)
 
-    def counting_sort(numbers, exp):
-        count = [0] * r
-        output = [0] * n
+    def counting_sort(numbers, exp): #해당 자릿수에서 정렬을 실시한다
+        count = [0] * r #카운트 배열 초기화, 각 숫자의 등장횟수 저장
+        output = [0] * n #결과 배열 초기화, 정렬된 결과를 저장할 배열
 
-        for i in range(n):
+        for i in range(n): #리스트를 순회하여, 각 숫자가 현재 자릿수에서 얼마인지 기록, 등장횟수는 count에 기록
             index = (numbers[i] // exp) % r
             count[index] += 1
 
-        for i in range(1, r):
+        for i in range(1, r): #count배열을 통해 누적 등장 횟수 계산, 이를 통해 각 숫자가 정렬된 배열에서 어느 위치에 위치해야하는지 알 수 있음
             count[i] += count[i - 1]
 
         i = n - 1
 
-        while i >= 0:
+        while i >= 0: #numbers리스트 역순하여 각 숫자를 현재 자릿수에 맞게 output 배열 배치, 해당 숫자 누적 등장 횟수 1 감소
             index = (numbers[i] // exp) % r
             output[count[index] - 1] = numbers[i]
             count[index] -= 1
             i -= 1
 
-        for i in range(n):
+        for i in range(n): #output 배열 저장 후 다시 numbers 배열로 복사
             numbers[i] = output[i]
 
-    for i in range(k):
-        exp = r ** i
+    for i in range(k): #자릿수를 계속해서 넘어간다
+        exp = r ** i # **은 r의 i제곱을 의미함, 제곱을 통해서 자릿수가 넘어감
         counting_sort(numbers, exp)
 
     print('after : ', numbers)
