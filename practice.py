@@ -4,21 +4,21 @@ from data_unsorted import numbers
 #출력 : 정렬된 배열 arr
 
 def heapify(root, size):
-    lc = root * 2 + 1
+    lc = root * 2 + 1 # lc = Left Child 
 
-    if lc >= size:
+    if lc >= size: # child 가 없다는 의미이다
         return
     
     child = lc
-    rc = root * 2 + 2
+    rc = root * 2 + 2 # rc = Right Child 
 
-    if rc < size:
-        if numbers[rc] > numbers[lc]:
-            child = rc
+    if rc < size: # lc 만 있을 수도 있지만, rc 도 있다면
+        if numbers[rc] > numbers[lc]: # lc 와 rc 중 큰 것을 비교하여
+            child = rc # child 에 담는다
 
-    if numbers[root] < numbers[child]:
-        numbers[root], numbers[child] = numbers[child], numbers[root]
-        heapify(child, size)
+    if numbers[root] < numbers[child]: # parent 와 child 중에 어느것이 큰지 비교하여
+        numbers[root], numbers[child] = numbers[child], numbers[root] # 필요시 교체한다
+        heapify(child, size) # 교체되어 내려간 child 를 새로운 parent 로 하여 재귀 호출한다
 
 def heap_sort(numbers):
     print('before : ', numbers)
@@ -32,8 +32,8 @@ def heap_sort(numbers):
     last_parent_index = count - 1
 
     while last_parent_index > 0:
-        numbers[0], numbers[last_parent_index] = numbers[last_parent_index], numbers[0]
-        heapify(0, last_parent_index)
+        numbers[0], numbers[last_parent_index] = numbers[last_parent_index], numbers[0] # 첫번째와 마지막의 원소를 교환한다
+        heapify(0, last_parent_index) # Root 에 새로운 녀석이 들어왔으므로 Heap 이 되기 위해 내린다
         last_parent_index -= 1
 
     print('after : ', numbers)
