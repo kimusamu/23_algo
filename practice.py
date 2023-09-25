@@ -38,7 +38,7 @@ def heap_sort(numbers):
 
     print('after : ', numbers)
 
-heap_sort(numbers)
+#heap_sort(numbers)
 
 #------------------------------------------------------------------------------
 #기수정렬
@@ -81,3 +81,36 @@ def radix_sort(numbers, n, k, r):
     print('after : ', numbers)
 
 #radix_sort(numbers, 100, 10, 3)
+
+#카운트 정렬
+def count_sort(numbers):
+    print('before : ', numbers)
+    count = len(numbers)
+
+    global counts
+    max_value = max(numbers)
+    counts = [0] * (max_value + 1)
+
+    global result
+    result = []
+
+    for i in range (count):
+        v = numbers[i]
+        counts[v] += 1
+
+    for i in range(max_value):
+        counts[i + 1] += counts[i]
+
+    result = [None] * count
+
+    for i in range(count - 1, -1, -1):
+        v = numbers[i]
+        at = counts[v] - 1
+        counts[v] -= 1
+        result[at] = v
+
+    print('after : ', counts)
+    print('after : ', result)
+    print('after : ', numbers)
+
+count_sort(numbers)
