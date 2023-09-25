@@ -3,46 +3,42 @@ from data_unsorted import numbers
 #입력 : 입력이 arr[1]부터 arr[n]까지 저장된 배열 A
 #출력 : 정렬된 배열 arr
 
-def downheap(arr, size, idx):
-    largest = idx # 현재 노드를 가장 큰 값으로 설정
-    left_child = 2 * idx + 1 # 왼쪽 자식 노드 인덱스 계산
-    right_child = 2 * idx + 2 # 오른쪽 자식 노드 인덱스 계산
+def heapify(root, size):
+    lc = root * 2 + 1
 
-    # 왼쪽 자식이 힙 크기 내에 있고 현재 노드보다 큰 경우
-    if left_child < size and arr[left_child] > arr[largest]:
-        largest = left_child
+    if lc >= size:
+        return
+    
+    child = lc
+    rc = root * 2 + 2
 
-    # 오른쪽 자식이 힙 크기 내에 있고 현재 노드나 왼쪽 자식보다 큰 경우
-    if right_child < size and arr[right_child] > arr[largest]:
-        largest = right_child
+    if rc < size:
+        if numbers[rc] > numbers[lc]:
+            child = rc
 
-    # 현재 노드가 가장 큰 노드가 아니면 교환
-    if largest != idx:
-        arr[idx], arr[largest] = arr[largest], arr[idx]
-
-        # 변경된 노드를 대상으로 재귀적으로 downheap을 호출
-        downheap(arr, size, largest)
-
-#배열 arr의 숫자에 대해서 힙 자료 구조를 만든다
-def heapify(arr):
-    size = len(arr)
-    for i in range(size // 2 - 1, -1, -1):
-        downheap(arr, size, i)
+    if numbers[root] < numbers[child]:
+        numbers[root], numbers[child] = numbers[child], numbers[root]
+        heapify(child, size)
 
 def heap_sort(numbers):
     print('before : ', numbers)
+    count = len(numbers)
 
-    heapify(numbers)
+    last_parent_index = count // 2 - 1
 
-    size = len(numbers) - 1 #힙의 크기를 조절하는 변수
+    for n in range(last_parent_index, -1, -1):
+        heapify(n, count)
 
-    for i in range(size, 0, -1):  # 변경된 부분
-        numbers[0], numbers[i] = numbers[i], numbers[0]
-        downheap(numbers, i, 0)
+    last_parent_index = count - 1
+
+    while last_parent_index > 0:
+        numbers[0], numbers[last_parent_index] = numbers[last_parent_index], numbers[0]
+        heapify(0, last_parent_index)
+        last_parent_index -= 1
 
     print('after : ', numbers)
 
-#heap_sort(numbers)
+heap_sort(numbers)
 
 #------------------------------------------------------------------------------
 #기수정렬
@@ -74,10 +70,14 @@ def radix_sort(numbers, n, k, r):
         for i in range(n): #output 배열 저장 후 다시 numbers 배열로 복사
             numbers[i] = output[i]
 
+            #현재 자릿수부터 가장 큰 자릿수까지 반복적으로 수행되어 전체 숫자배열 정렬
+            #핵심은 각 숫자의 등장횟수를 세어서 정렬 수행, 누적 등장 횟수를 이용하여 숫자들을 정렬된 위치에 배치하는 것
+            #계수 정렬은 숫자범위가 제한적일때 가장 효율적으로 작동하며, 비교기간 정렬과는 다른 원리를 가짐
+
     for i in range(k): #자릿수를 계속해서 넘어간다
         exp = r ** i # **은 r의 i제곱을 의미함, 제곱을 통해서 자릿수가 넘어감
         counting_sort(numbers, exp)
 
     print('after : ', numbers)
 
-radix_sort(numbers, 100, 10, 3)
+#radix_sort(numbers, 100, 10, 3)
