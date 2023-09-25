@@ -109,8 +109,8 @@ def count_sort(numbers):
         counts[v] -= 1
         result[at] = v
 
-    print('after : ', counts)
-    print('after : ', result)
+    print('count : ', counts)
+    print('result : ', result)
     print('after : ', numbers)
 
 count_sort(numbers)
