@@ -1,5 +1,4 @@
 import random
-#import heapq
 random.seed('class_02')
 
 def downHeap(arr, root, size):
@@ -19,13 +18,15 @@ def downHeap(arr, root, size):
 
 array = [ random.randrange(100) for _ in range(30)]
 l_arr = len(array)
-#heapq.heapify(array)
+
 for i in range(l_arr // 2 - 1, -1, -1):
     downHeap(array, i, l_arr)
-print(array)
+#print(array)
 
 for i in range(l_arr - 1, 0, -1):
     array[0], array[i] = array[i], array[0]
     l_arr -= 1
     downHeap(array, 0, l_arr)
-    print(array)
+    #print(array)
+
+print(array)
