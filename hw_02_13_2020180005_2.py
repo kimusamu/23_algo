@@ -18,7 +18,7 @@ g = { u:dict() for u in range(num_vertex) }
 
 for u, v, w in edges:
       g[u][v] = w
-      g[v][u] = v
+      g[v][u] = w
 
 D = hdict()
 mst = []
