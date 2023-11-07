@@ -35,7 +35,9 @@ while D:
             mst.append( (fr, u, w) )
       for adj, weight in g[u].items():
             if adj in pts_in_mst: continue
-            if adj not in D or D[adj][0] > weight:
+            if not adj in D:
+                  D[adj] = weight, u
+            elif D[adj][0] > weight:
                   D[adj] = weight, u
             else:
                   pass
