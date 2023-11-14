@@ -1,54 +1,37 @@
-from random import randint
+def matrix_chain_order(d):
+    n = len(d) - 1  # 행렬 개수
+    m = [[0] * n for _ in range(n)]
+    s = [[0] * n for _ in range(n)]
 
-class ChainedMatrixMult:
-    print('[Chained Matrix Multiplication]')
-    def __init__(self, sizes):
-        self.sizes = sizes
-        self.matrix_count = len(self.sizes) - 1
-        self.matrices = [self.generate_matrix(self.sizes[i], self.sizes[i + 1]) for i in range(self.matrix_count)]
-        self.C = [[0 for _ in range(self.matrix_count)] for _ in range(self.matrix_count)]
-        self.P = [[0 for _ in range(self.matrix_count)] for _ in range(self.matrix_count)]
+    for i in range(n):
+        m[i][i] = 0
 
-    def generate_matrix(self, rows, columns):
-        return [[randint(1, 10) for _ in range(columns)] for _ in range(rows)]
+    for chain_length in range(2, n + 1):
+        for i in range(n - chain_length + 1):
+            j = i + chain_length - 1
+            m[i][j] = float('inf')
 
-    def matrix_chain_order(self):
-        for length in range(2, self.matrix_count + 1):
-            for i in range(self.matrix_count - length + 1):
-                j = i + length - 1
-                self.C[i][j] = float('inf')
-                for k in range(i, j):
-                    cost = self.C[i][k] + self.C[k + 1][j] + self.sizes[i] * self.sizes[k + 1] * self.sizes[j + 1]
-                    if cost < self.C[i][j]:
-                        self.C[i][j] = cost
-                        self.P[i][j] = k
+            for k in range(i, j):
+                cost = m[i][k] + m[k + 1][j] + d[i] * d[k + 1] * d[j + 1]
+                if cost < m[i][j]:
+                    m[i][j] = cost
+                    s[i][j] = k
 
-    def print_matrices(self):
-        for i, matrix in enumerate(self.matrices):
-            print(f"Matrix {i}:")
-            for row in matrix:
-                print(row)
-            print()
+    return m, s
 
-    def print_optimal_parentheses(self, i, j):
-        if i == j:
-            print(f"M{i}", end="")
-        else:
-            print("(", end="")
-            self.print_optimal_parentheses(i, self.P[i][j])
-            print(" x ", end="")
-            self.print_optimal_parentheses(self.P[i][j] + 1, j)
-            print(")", end="")
+def print_optimal_parenthesis(s, i, j):
+    if i == j:
+        print(f'M{str(i)}', end='')
+    else:
+        print('(', end='')
+        print_optimal_parenthesis(s, i, s[i][j])
+        print(" x ", end='')
+        print_optimal_parenthesis(s, s[i][j] + 1, j)
+        print(')', end='')
 
-    def get_minimum_cost(self):
-        return self.C[0][self.matrix_count - 1]
+d = [2, 8, 2, 9, 8, 3, 9, 2]
+m, s = matrix_chain_order(d)
 
-
-d = [2, 3, 4, 2, 5, 6, 2, 8]
-cm = ChainedMatrixMult(d)
-#cm.print_matrices()
-cm.matrix_chain_order()
-print("\nOptimal Parenthesization: ", end="")
-cm.print_optimal_parentheses(0, len(d) - 2)
-print()
-print("Minimum cost:", cm.get_minimum_cost())
+print("Optimal Parenthesization:")
+print_optimal_parenthesis(s, 0, len(d) - 2)
+print("\nMinimum number of multiplications:", m[0][-1])

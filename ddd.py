@@ -1,50 +1,40 @@
-edges = [
-      (0, 6, 130), (0, 17, 280), (0, 19, 435), (1, 4, 449), (1, 5, 392),
-      (1, 7, 346), (1, 13, 325), (2, 21, 335), (3, 6, 231), (3, 17, 140),
-      (3, 20, 323), (4, 5, 390), (4, 12, 299), (4, 15, 399), (5, 10, 445),
-      (5, 13, 234), (6, 12, 468), (6, 16, 377), (6, 17, 168), (6, 19, 304),
-      (6, 21, 309), (7, 12, 362), (7, 13, 288), (7, 21, 445), (8, 9, 230),
-      (8, 18, 103), (9, 11, 314), (9, 16, 323), (9, 17, 439), (9, 18, 154),
-      (10, 13, 328), (10, 15, 207), (10, 21, 433), (11, 14, 226), (11, 15, 381),
-      (11, 18, 444), (11, 19, 378), (11, 20, 113), (12, 13, 264), (12, 15, 402),
-      (12, 19, 346), (14, 15, 320), (14, 19, 454), (14, 20, 326), (15, 19, 243),
-      (16, 17, 308), (17, 20, 293),
-]
-num_vertex = 22
+def matrix_chain_order(d):
+    n = len(d) - 1  # 행렬 개수
+    m = [[0] * n for _ in range(n)]  # 최적의 곱셈 순서를 저장하는 행렬
+    s = [[0] * n for _ in range(n)]  # 최적의 괄호 위치를 저장하는 행렬
 
-INF = float('inf')
-g = [[INF for _ in range(num_vertex)] for _ in range(num_vertex)]
-via = [[-1 for _ in range(num_vertex)] for _ in range(num_vertex)]
+    # 행렬 하나만 있는 경우
+    for i in range(n):
+        m[i][i] = 0
 
-for s, e, w in edges:
-    g[s][e] = w
-    g[e][s] = w
-    via[s][e] = e
-    via[e][s] = e
+    # chain length은 2부터 n까지 증가
+    for chain_length in range(2, n + 1):
+        for i in range(n - chain_length + 1):
+            j = i + chain_length - 1
+            m[i][j] = float('inf')  # 무한대로 초기화
 
-#print(g)
+            # 가능한 모든 괄호 위치에 대해 최소 곱셈 비용 계산
+            for k in range(i, j):
+                cost = m[i][k] + m[k + 1][j] + d[i] * d[k + 1] * d[j + 1]
+                if cost < m[i][j]:
+                    m[i][j] = cost
+                    s[i][j] = k
 
-for k in range(num_vertex):
-    for s in range(num_vertex):
-        if s == k: continue
-        for e in range(num_vertex):
-            if e == k or e == k: continue
-            if g[s][k] + g[k][e] < g[s][e]:
-                g[s][e] = g[s][k] + g[k][e]
-                via[s][e] = k
+    return m, s
 
-def get_path(s, e):
-    path = [s]
-    while s != e:
-        k = via[s][e]
-        if k == e:
-            path.append(e)
-        else:
-            path.append(k)
-        s = k
-    return '-'.join(map(str, path))
+def print_optimal_parenthesis(s, i, j):
+    if i == j:
+        print(f'M{str(i)}', end='')
+    else:
+        print('(', end='')
+        print_optimal_parenthesis(s, i, s[i][j])
+        print(" x ", end='')
+        print_optimal_parenthesis(s, s[i][j] + 1, j)
+        print(')', end='')
 
-for s in range(num_vertex):
-    for e in range(num_vertex):
-        if s == e: continue
-        print(str(s) + get_path(s, e))
+d = [2, 8, 2, 9, 8, 3, 9, 2]
+m, s = matrix_chain_order(d)
+
+print("Optimal Parenthesization:")
+print_optimal_parenthesis(s, 0, len(d) - 2)
+print("\nMinimum number of multiplications:", m[0][-1])

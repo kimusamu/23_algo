@@ -12,54 +12,38 @@ edges = [
 ]
 num_vertex = 22
 
+def floyd_warshall(edges, num_vertex):
+    # 초기화
+    inf = float('inf')
+    dist = [[inf] * num_vertex for _ in range(num_vertex)]
+    next_vertex = [[None] * num_vertex for _ in range(num_vertex)]
 
-class Floyd:
-    print('[Floyd Warshall]')
-    INF = float('inf')
-    dgraph = {}
-    dirs = {}
+    for edge in edges:
+        src, dest, cost = edge
+        dist[src][dest] = cost
+        next_vertex[src][dest] = dest
 
-    def __init__(self, num_vertex):
-        self.num_vertex = num_vertex
-        for u in range(self.num_vertex):
-            self.dgraph[u] = {}
-            self.dirs[u] = {}
-            for v in range(self.num_vertex):
-                if any(x == (u, v) for x in edges):
-                    idx = edges.index((u, v))
-                    self.dgraph[u][v] = edges[idx][2]
-                    self.dirs[u][v] = v
-                else:
-                    self.dgraph[u][v] = self.INF
-                    self.dirs[u][v] = -1
-            self.dgraph[u][u] = 0
+    for i in range(num_vertex):
+        dist[i][i] = 0
 
-    def start(self):
-        for k in range(self.num_vertex):
-            for i in range(self.num_vertex):
-                for j in range(self.num_vertex):
-                    dist = self.dgraph[i][j]
-                    via = self.dgraph[i][k] + self.dgraph[k][j]
-                    if via < dist:
-                        self.dgraph[i][j] = via
-                        self.dirs[i][j] = k
+    for k in range(num_vertex):
+        for i in range(num_vertex):
+            for j in range(num_vertex):
+                if dist[i][j] > dist[i][k] + dist[k][j]:
+                    dist[i][j] = dist[i][k] + dist[k][j]
+                    next_vertex[i][j] = next_vertex[i][k]
 
-    def print_paths(self):
-        for i in range(self.num_vertex):
-            for j in range(self.num_vertex):
-                path = [i]
-                if i != j:
-                    k = self.dirs[i][j]
-                    while k != -1:
-                        path.append(k)
-                        if k == j:
-                            break
-                        k = self.dirs[k][j]
+    for i in range(num_vertex):
+        for j in range(num_vertex):
+            if i != j and next_vertex[i][j] is not None:
+                path = reconstruct_path(i, j, next_vertex)
+                print(f"Path from {i} to {j}: {path}, Cost: {dist[i][j]}")
 
-                path = ' -> '.join(map(str, path))
-                print(f"Path from {i} to {j}: {path}")
+def reconstruct_path(start, end, next_vertex):
+    path = [start]
+    while start != end:
+        start = next_vertex[start][end]
+        path.append(start)
+    return path
 
-
-floyd = Floyd(num_vertex)
-floyd.start()
-floyd.print_paths()
+floyd_warshall(edges, num_vertex)
